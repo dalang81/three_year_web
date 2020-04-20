@@ -1,6 +1,20 @@
+// import Mock, {Random} from 'mockjs';
+const Mock = require('mockjs');
+const {Random} = Mock;
+
+
+const _ = require('lodash');
+
 function getFakeCaptcha(req, res) {
   return res.json('captcha-xxx');
 } // 代码中会兼容本地 service mock 以及部署站点的静态数据
+const genName = () => Mock.mock({
+  "gender|1-2": 1,
+  "name": Random.cname(),
+  "age|18-60": 1,
+  "address": Random.county(true)
+});
+
 
 export default {
   // 支持值为 Object 和 Array
@@ -55,26 +69,7 @@ export default {
     phone: '0752-268888888',
   },
   // GET POST 可省略
-  'GET /api/usermanagement/list': [
-    {
-      key: '1',
-      name: 'John Brown',
-      age: 32,
-      address: 'New York No. 1 Lake Park',
-    },
-    {
-      key: '2',
-      name: 'Jim Green',
-      age: 42,
-      address: 'London No. 1 Lake Park',
-    },
-    {
-      key: '3',
-      name: 'Joe Black',
-      age: 32,
-      address: 'Sidney No. 1 Lake Park',
-    },
-  ],
+  'GET /api/usermanagement/list': _.chain(20).range().map(() => genName()).value(),
   'GET /api/500': (req, res) => {
     res.status(500).send({
       timestamp: 1513932555104,
