@@ -93,6 +93,12 @@ export default defineConfig({
               component: './UserManagement',
             },
             {
+              name: '学校管理',
+              icon: 'table',
+              path: '/SchoolManagement',
+              component: './SchoolManagement',
+            },
+            {
               component: './404',
             },
           ],
