@@ -1,7 +1,7 @@
-import { DownOutlined, PlusOutlined } from '@ant-design/icons';
-import { Button, Divider, Dropdown, Menu, message, Input } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
+import { Button, Divider, message, Input } from 'antd';
 import React, { useState, useRef } from 'react';
-import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import CreateForm from './components/CreateForm';
 import UpdateForm from './components/UpdateForm';
@@ -11,7 +11,7 @@ import { queryRule, updateRule, addRule, removeRule } from './service';
  * @param fields
  */
 
-const handleAdd = async fields => {
+const handleAdd = async (fields) => {
   const hide = message.loading('正在添加');
 
   try {
@@ -30,7 +30,7 @@ const handleAdd = async fields => {
  * @param fields
  */
 
-const handleUpdate = async fields => {
+const handleUpdate = async (fields) => {
   const hide = message.loading('正在配置');
 
   try {
@@ -53,13 +53,13 @@ const handleUpdate = async fields => {
  * @param selectedRows
  */
 
-const handleRemove = async selectedRows => {
+const handleRemove = async (selectedRows) => {
   const hide = message.loading('正在删除');
   if (!selectedRows) return true;
 
   try {
     await removeRule({
-      key: selectedRows.map(row => row.key),
+      key: selectedRows.map((row) => row.key),
     });
     hide();
     message.success('删除成功，即将刷新');
@@ -72,11 +72,11 @@ const handleRemove = async selectedRows => {
 };
 
 const TableList = () => {
-  const [sorter, setSorter] = useState('');
   const [createModalVisible, handleModalVisible] = useState(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState(false);
   const [stepFormValues, setStepFormValues] = useState({});
   const actionRef = useRef();
+  const [selectedRowsState, setSelectedRows] = useState([]);
   const columns = [
     {
       title: '规则名称',
@@ -98,7 +98,7 @@ const TableList = () => {
       dataIndex: 'callNo',
       sorter: true,
       hideInForm: true,
-      renderText: val => `${val} 万`,
+      renderText: (val) => `${val} 万`,
     },
     {
       title: '状态',
@@ -164,71 +164,56 @@ const TableList = () => {
     },
   ];
   return (
-    <PageHeaderWrapper>
+    <PageContainer>
       <ProTable
         headerTitle="查询表格"
         actionRef={actionRef}
         rowKey="key"
-        onChange={(_, _filter, _sorter) => {
-          const sorterResult = _sorter;
-
-          if (sorterResult.field) {
-            setSorter(`${sorterResult.field}_${sorterResult.order}`);
-          }
-        }}
-        params={{
-          sorter,
-        }}
-        toolBarRender={(action, { selectedRows }) => [
+        toolBarRender={() => [
           <Button type="primary" onClick={() => handleModalVisible(true)}>
             <PlusOutlined /> 新建
           </Button>,
-          selectedRows && selectedRows.length > 0 && (
-            <Dropdown
-              overlay={
-                <Menu
-                  onClick={async e => {
-                    if (e.key === 'remove') {
-                      await handleRemove(selectedRows);
-                      action.reload();
-                    }
-                  }}
-                  selectedKeys={[]}
-                >
-                  <Menu.Item key="remove">批量删除</Menu.Item>
-                  <Menu.Item key="approval">批量审批</Menu.Item>
-                </Menu>
-              }
-            >
-              <Button>
-                批量操作 <DownOutlined />
-              </Button>
-            </Dropdown>
-          ),
         ]}
-        tableAlertRender={({ selectedRowKeys, selectedRows }) => (
-          <div>
-            已选择{' '}
-            <a
-              style={{
-                fontWeight: 600,
-              }}
-            >
-              {selectedRowKeys.length}
-            </a>{' '}
-            项&nbsp;&nbsp;
-            <span>
-              服务调用次数总计 {selectedRows.reduce((pre, item) => pre + item.callNo, 0)} 万
-            </span>
-          </div>
-        )}
-        request={params => queryRule(params)}
+        request={(params, sorter, filter) => queryRule({ ...params, sorter, filter })}
         columns={columns}
-        rowSelection={{}}
+        rowSelection={{
+          onChange: (_, selectedRows) => setSelectedRows(selectedRows),
+        }}
       />
+      {selectedRowsState?.length > 0 && (
+        <FooterToolbar
+          extra={
+            <div>
+              已选择{' '}
+              <a
+                style={{
+                  fontWeight: 600,
+                }}
+              >
+                {selectedRowsState.length}
+              </a>{' '}
+              项&nbsp;&nbsp;
+              <span>
+                服务调用次数总计 {selectedRowsState.reduce((pre, item) => pre + item.callNo, 0)} 万
+              </span>
+            </div>
+          }
+        >
+          <Button
+            onClick={async () => {
+              await handleRemove(selectedRowsState);
+              setSelectedRows([]);
+              actionRef.current?.reloadAndRest();
+            }}
+          >
+            批量删除
+          </Button>
+          <Button type="primary">批量审批</Button>
+        </FooterToolbar>
+      )}
       <CreateForm onCancel={() => handleModalVisible(false)} modalVisible={createModalVisible}>
         <ProTable
-          onSubmit={async value => {
+          onSubmit={async (value) => {
             const success = await handleAdd(value);
 
             if (success) {
@@ -247,7 +232,7 @@ const TableList = () => {
       </CreateForm>
       {stepFormValues && Object.keys(stepFormValues).length ? (
         <UpdateForm
-          onSubmit={async value => {
+          onSubmit={async (value) => {
             const success = await handleUpdate(value);
 
             if (success) {
@@ -267,7 +252,7 @@ const TableList = () => {
           values={stepFormValues}
         />
       ) : null}
-    </PageHeaderWrapper>
+    </PageContainer>
   );
 };
 

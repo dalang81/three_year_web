@@ -1,13 +1,12 @@
-import {AlipayCircleOutlined, TaobaoCircleOutlined, WeiboCircleOutlined} from '@ant-design/icons';
-import {Alert, Checkbox} from 'antd';
-import React, {useState} from 'react';
-import {Link, connect} from 'umi';
-import LoginFrom from './components/Login';
+import { AlipayCircleOutlined, TaobaoCircleOutlined, WeiboCircleOutlined } from '@ant-design/icons';
+import { Alert, Checkbox } from 'antd';
+import React, { useState } from 'react';
+import { Link, connect } from 'umi';
 import styles from './style.less';
+import LoginFrom from './components/Login';
+const { Tab, UserName, Password, Mobile, Captcha, Submit } = LoginFrom;
 
-const {Tab, UserName, Password, Mobile, Captcha, Submit} = LoginFrom;
-
-const LoginMessage = ({content}) => (
+const LoginMessage = ({ content }) => (
   <Alert
     style={{
       marginBottom: 24,
@@ -18,17 +17,17 @@ const LoginMessage = ({content}) => (
   />
 );
 
-const Login = props => {
-  const {userLogin = {}, submitting} = props;
-  const {status, type: loginType} = userLogin;
+const Login = (props) => {
+  const { userAndlogin = {}, submitting } = props;
+  const { status, type: loginType } = userAndlogin;
   const [autoLogin, setAutoLogin] = useState(true);
   const [type, setType] = useState('account');
 
-  const handleSubmit = values => {
-    const {dispatch} = props;
+  const handleSubmit = (values) => {
+    const { dispatch } = props;
     dispatch({
-      type: 'login/auth',
-      payload: {...values, type},
+      type: 'userAndlogin/login',
+      payload: { ...values, type },
     });
   };
 
@@ -37,12 +36,12 @@ const Login = props => {
       <LoginFrom activeKey={type} onTabChange={setType} onSubmit={handleSubmit}>
         <Tab key="account" tab="账户密码登录">
           {status === 'error' && loginType === 'account' && !submitting && (
-            <LoginMessage content="账户或密码错误（demo/123456）"/>
+            <LoginMessage content="账户或密码错误（admin/ant.design）" />
           )}
 
           <UserName
-            name="username"
-            placeholder="用户名: demo"
+            name="userName"
+            placeholder="用户名: admin or user"
             rules={[
               {
                 required: true,
@@ -52,7 +51,7 @@ const Login = props => {
           />
           <Password
             name="password"
-            placeholder="密码: 123456"
+            placeholder="密码: ant.design"
             rules={[
               {
                 required: true,
@@ -63,7 +62,7 @@ const Login = props => {
         </Tab>
         <Tab key="mobile" tab="手机号登录">
           {status === 'error' && loginType === 'mobile' && !submitting && (
-            <LoginMessage content="验证码错误"/>
+            <LoginMessage content="验证码错误" />
           )}
           <Mobile
             name="mobile"
@@ -94,7 +93,7 @@ const Login = props => {
           />
         </Tab>
         <div>
-          <Checkbox checked={autoLogin} onChange={e => setAutoLogin(e.target.checked)}>
+          <Checkbox checked={autoLogin} onChange={(e) => setAutoLogin(e.target.checked)}>
             自动登录
           </Checkbox>
           <a
@@ -106,7 +105,7 @@ const Login = props => {
           </a>
         </div>
         <Submit loading={submitting}>登录</Submit>
-        {/*<div className={styles.other}>
+        <div className={styles.other}>
           其他登录方式
           <AlipayCircleOutlined className={styles.icon} />
           <TaobaoCircleOutlined className={styles.icon} />
@@ -114,13 +113,13 @@ const Login = props => {
           <Link className={styles.register} to="/user/register">
             注册账户
           </Link>
-        </div>*/}
+        </div>
       </LoginFrom>
     </div>
   );
 };
 
-export default connect(({login, loading}) => ({
-  userLogin: login,
-  submitting: loading.effects['login/login'],
+export default connect(({ userAndlogin, loading }) => ({
+  userAndlogin,
+  submitting: loading.effects['userAndlogin/login'],
 }))(Login);

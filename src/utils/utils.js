@@ -3,7 +3,7 @@ import pathRegexp from 'path-to-regexp';
 
 /* eslint no-useless-escape:0 import/prefer-default-export:0 */
 const reg = /(((^https?:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+(?::\d+)?|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)$/;
-export const isUrl = path => reg.test(path);
+export const isUrl = (path) => reg.test(path);
 export const isAntDesignPro = () => {
   if (ANT_DESIGN_PRO_ONLY_DO_NOT_USE_IN_YOUR_PRODUCTION === 'site') {
     return true;
@@ -30,8 +30,8 @@ export const getPageQuery = () => parse(window.location.href.split('?')[1]);
 
 export const getAuthorityFromRouter = (router = [], pathname) => {
   const authority = router.find(
-    ({ routes, path = '/' }) =>
-      (path && pathRegexp(path).exec(pathname)) ||
+    ({ routes, path = '/', target = '_self' }) =>
+      (path && target !== '_blank' && pathRegexp(path).exec(pathname)) ||
       (routes && getAuthorityFromRouter(routes, pathname)),
   );
   if (authority) return authority;
@@ -39,7 +39,7 @@ export const getAuthorityFromRouter = (router = [], pathname) => {
 };
 export const getRouteAuthority = (path, routeData) => {
   let authorities;
-  routeData.forEach(route => {
+  routeData.forEach((route) => {
     // match prefix
     if (pathRegexp(`${route.path}/(.*)`).test(`${path}/`)) {
       if (route.authority) {

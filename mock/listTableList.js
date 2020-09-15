@@ -42,37 +42,54 @@ function getRule(req, res, u) {
   const { current = 1, pageSize = 10 } = req.query;
   const params = parse(realUrl, true).query;
   let dataSource = [...tableListDataSource].slice((current - 1) * pageSize, current * pageSize);
+  const sorter = JSON.parse(params.sorter);
 
-  if (params.sorter) {
-    const s = params.sorter.split('_');
+  if (sorter) {
     dataSource = dataSource.sort((prev, next) => {
-      if (s[1] === 'descend') {
-        return next[s[0]] - prev[s[0]];
-      }
+      let sortNumber = 0;
+      Object.keys(sorter).forEach((key) => {
+        if (sorter[key] === 'descend') {
+          if (prev[key] - next[key] > 0) {
+            sortNumber += -1;
+          } else {
+            sortNumber += 1;
+          }
 
-      return prev[s[0]] - next[s[0]];
+          return;
+        }
+
+        if (prev[key] - next[key] > 0) {
+          sortNumber += 1;
+        } else {
+          sortNumber += -1;
+        }
+      });
+      return sortNumber;
     });
   }
 
-  if (params.status) {
-    const status = params.status.split(',');
-    let filterDataSource = [];
-    status.forEach(s => {
-      filterDataSource = filterDataSource.concat(
-        dataSource.filter(item => {
-          if (parseInt(`${item.status}`, 10) === parseInt(s.split('')[0], 10)) {
+  if (params.filter) {
+    const filter = JSON.parse(params.filter);
+
+    if (Object.keys(filter).length > 0) {
+      dataSource = dataSource.filter((item) => {
+        return Object.keys(filter).some((key) => {
+          if (!filter[key]) {
+            return true;
+          }
+
+          if (filter[key].includes(`${item[key]}`)) {
             return true;
           }
 
           return false;
-        }),
-      );
-    });
-    dataSource = filterDataSource;
+        });
+      });
+    }
   }
 
   if (params.name) {
-    dataSource = dataSource.filter(data => data.name.includes(params.name || ''));
+    dataSource = dataSource.filter((data) => data.name.includes(params.name || ''));
   }
 
   const result = {
@@ -98,7 +115,7 @@ function postRule(req, res, u, b) {
   switch (method) {
     /* eslint no-case-declarations:0 */
     case 'delete':
-      tableListDataSource = tableListDataSource.filter(item => key.indexOf(item.key) === -1);
+      tableListDataSource = tableListDataSource.filter((item) => key.indexOf(item.key) === -1);
       break;
 
     case 'post':
@@ -129,7 +146,7 @@ function postRule(req, res, u, b) {
     case 'update':
       (() => {
         let newRule = {};
-        tableListDataSource = tableListDataSource.map(item => {
+        tableListDataSource = tableListDataSource.map((item) => {
           if (item.key === key) {
             newRule = { ...item, desc, name };
             return { ...item, desc, name };

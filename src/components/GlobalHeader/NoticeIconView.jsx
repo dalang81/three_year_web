@@ -17,7 +17,7 @@ class GlobalHeaderRight extends Component {
     }
   }
 
-  changeReadState = clickedItem => {
+  changeReadState = (clickedItem) => {
     const { id } = clickedItem;
     const { dispatch } = this.props;
 
@@ -28,7 +28,6 @@ class GlobalHeaderRight extends Component {
       });
     }
   };
-
   handleNoticeClear = (title, key) => {
     const { dispatch } = this.props;
     message.success(`${'清空了'} ${title}`);
@@ -40,15 +39,14 @@ class GlobalHeaderRight extends Component {
       });
     }
   };
-
   getNoticeData = () => {
     const { notices = [] } = this.props;
 
-    if (!notices || notices.length === 0) {
+    if (!notices || notices.length === 0 || !Array.isArray(notices)) {
       return {};
     }
 
-    const newNotices = notices.map(notice => {
+    const newNotices = notices.map((notice) => {
       const newNotice = { ...notice };
 
       if (newNotice.datetime) {
@@ -82,10 +80,9 @@ class GlobalHeaderRight extends Component {
     });
     return groupBy(newNotices, 'type');
   };
-
-  getUnreadData = noticeData => {
+  getUnreadData = (noticeData) => {
     const unreadMsg = {};
-    Object.keys(noticeData).forEach(key => {
+    Object.keys(noticeData).forEach((key) => {
       const value = noticeData[key];
 
       if (!unreadMsg[key]) {
@@ -93,7 +90,7 @@ class GlobalHeaderRight extends Component {
       }
 
       if (Array.isArray(value)) {
-        unreadMsg[key] = value.filter(item => !item.read).length;
+        unreadMsg[key] = value.filter((item) => !item.read).length;
       }
     });
     return unreadMsg;
@@ -107,7 +104,7 @@ class GlobalHeaderRight extends Component {
       <NoticeIcon
         className={styles.action}
         count={currentUser && currentUser.unreadCount}
-        onItemClick={item => {
+        onItemClick={(item) => {
           this.changeReadState(item);
         }}
         loading={fetchingNotices}

@@ -1,18 +1,17 @@
-export default {
+const proSettings = {
   navTheme: 'dark',
   // 拂晓蓝
   primaryColor: '#1890ff',
-  layout: 'sidemenu',
+  layout: 'side',
   contentWidth: 'Fluid',
   fixedHeader: false,
-  autoHideHeader: false,
-  fixSiderbar: false,
+  fixSiderbar: true,
   colorWeak: false,
   menu: {
-    // locale: true,
-    locale: false
+    locale: true,
   },
-  title: 'Three Years',
+  title: 'Dubhe',
   pwa: false,
   iconfontUrl: '',
 };
+export default proSettings;
