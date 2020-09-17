@@ -1,10 +1,13 @@
-import { history } from 'umi';
-import { message } from 'antd';
-import { parse } from 'qs';
-import { fakeAccountLogin, getFakeCaptcha } from './service';
+import {history} from 'umi';
+import {message} from 'antd';
+import {parse} from 'qs';
+import {fakeAccountLogin, getFakeCaptcha} from './service';
+import {AuthControllerApi} from 'kosmos-dubhe-api';
+
 export function getPageQuery() {
   return parse(window.location.href.split('?')[1]);
 }
+
 export function setAuthority(authority) {
   const proAuthority = typeof authority === 'string' ? [authority] : authority;
   localStorage.setItem('antd-pro-authority', JSON.stringify(proAuthority)); // hard code
@@ -20,13 +23,18 @@ export function setAuthority(authority) {
 
   return authority;
 }
+
 const Model = {
   namespace: 'userAndlogin',
   state: {
     status: undefined,
   },
   effects: {
-    *login({ payload }, { call, put }) {
+    * login({payload: {userName, type, password}}, {call, put}) {
+      const service = new AuthControllerApi();
+      console.log('effects login userName, type, password ', userName, type, password);
+      const result = yield call(() => service.loginUsingPOST(userName, password));
+      console.log('effects login result ', result);
       const response = yield call(fakeAccountLogin, payload);
       yield put({
         type: 'changeLoginStatus',
@@ -37,7 +45,7 @@ const Model = {
         message.success('登录成功！');
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();
-        let { redirect } = params;
+        let {redirect} = params;
 
         if (redirect) {
           const redirectUrlParams = new URL(redirect);
@@ -58,14 +66,14 @@ const Model = {
       }
     },
 
-    *getCaptcha({ payload }, { call }) {
+    * getCaptcha({payload}, {call}) {
       yield call(getFakeCaptcha, payload);
     },
   },
   reducers: {
-    changeLoginStatus(state, { payload }) {
+    changeLoginStatus(state, {payload}) {
       setAuthority(payload.currentAuthority);
-      return { ...state, status: payload.status, type: payload.type };
+      return {...state, status: payload.status, type: payload.type};
     },
   },
 };

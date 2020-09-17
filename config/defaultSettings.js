@@ -3,8 +3,7 @@ const getApi = () => {
   console.log(' getApi API_ENV ', API_ENV);
   switch (API_ENV) {
     case 'dev': {
-      return '';
-      return 'http://localhost:8080';
+      return 'http://localhost:28101';
     }
     case 'qa': {
       return 'http://10.10.10.210:28301';
