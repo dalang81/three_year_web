@@ -1,8 +1,10 @@
 // https://umijs.org/config/
-import { defineConfig } from 'umi';
+import {defineConfig} from 'umi';
 import defaultSettings from './defaultSettings';
 import proxy from './proxy';
-const { REACT_APP_ENV } = process.env;
+
+const {REACT_APP_ENV} = process.env;
+console.log('  REACT_APP_ENV ', REACT_APP_ENV);
 export default defineConfig({
   hash: true,
   antd: {},
@@ -288,6 +290,13 @@ export default defineConfig({
       ],
     },
   ],
+  define: {
+    APP_TYPE: process.env.APP_TYPE || '',
+    API_ENV: process.env.API_ENV || '',
+    'process.env': {
+      API_ENV: process.env.API_ENV,    // bywukai  ENV 📦 2020-08-12 20:46
+    },
+  },
   // Theme for antd: https://ant.design/docs/react/customize-theme-cn
   theme: {
     // ...darkTheme,

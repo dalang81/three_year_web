@@ -1,6 +1,7 @@
-import { parse } from 'querystring';
+import {parse} from 'querystring';
 import pathRegexp from 'path-to-regexp';
-
+import defaultSettings from '../../config/defaultSettings';
+import { ApiClient, ApiContext } from 'kosmos-dubhe-api';
 /* eslint no-useless-escape:0 import/prefer-default-export:0 */
 const reg = /(((^https?:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+(?::\d+)?|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)$/;
 export const isUrl = (path) => reg.test(path);
@@ -13,7 +14,7 @@ export const isAntDesignPro = () => {
 }; // 给官方演示站点用，用于关闭真实开发环境不需要使用的特性
 
 export const isAntDesignProOrDev = () => {
-  const { NODE_ENV } = process.env;
+  const {NODE_ENV} = process.env;
 
   if (NODE_ENV === 'development') {
     return true;
@@ -30,7 +31,7 @@ export const getPageQuery = () => parse(window.location.href.split('?')[1]);
 
 export const getAuthorityFromRouter = (router = [], pathname) => {
   const authority = router.find(
-    ({ routes, path = '/', target = '_self' }) =>
+    ({routes, path = '/', target = '_self'}) =>
       (path && target !== '_blank' && pathRegexp(path).exec(pathname)) ||
       (routes && getAuthorityFromRouter(routes, pathname)),
   );
@@ -56,4 +57,45 @@ export const getRouteAuthority = (path, routeData) => {
     }
   });
   return authorities;
+};
+
+
+// -----------------------------------------------------------------------
+const voidFunction = () => ({});
+
+const selectSelf = (store, namespace) => store[namespace];
+const selectSelfFn = namespace => store => {
+  return selectSelf(store, namespace);
+};
+
+const buildApiClient = () => {
+  const result = ApiClient.instance;
+  const basePath = defaultSettings.endpoint;
+  result.defaultHeaders = {...result.defaultHeaders, ...{token: localStorage.getItem('token')}};
+  result.basePath = basePath;
+  return result;
+};
+
+const registSystemExceptionHandler = fn => {
+  ApiContext.instance.handleSystemException = fn || ApiContext.instance.handleSystemException;
+};
+
+const registAuthExceptionHandler = fn => {
+  ApiContext.instance.handleAuthException = fn || ApiContext.instance.handleAuthException;
+};
+
+const registBusinessExceptionHandler = fn => {
+  ApiContext.instance.handleBusinessException = fn || ApiContext.instance.handleBusinessException;
+};
+
+ApiClient.getInstance = buildApiClient;
+
+export {
+  buildApiClient,
+  voidFunction,
+  registSystemExceptionHandler,
+  registAuthExceptionHandler,
+  registBusinessExceptionHandler,
+  selectSelf,
+  selectSelfFn,
 };
