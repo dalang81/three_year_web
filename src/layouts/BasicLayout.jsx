@@ -3,15 +3,20 @@
  * You can view component api by:
  * https://github.com/ant-design/ant-design-pro-layout
  */
-import ProLayout, { DefaultFooter, SettingDrawer } from '@ant-design/pro-layout';
-import React, { useEffect } from 'react';
-import { Link, useIntl, connect, history } from 'umi';
-import { GithubOutlined } from '@ant-design/icons';
-import { Result, Button } from 'antd';
+import ProLayout, {DefaultFooter, SettingDrawer} from '@ant-design/pro-layout';
+import React, {useEffect} from 'react';
+import {Link, useIntl, connect, history} from 'umi';
+import {GithubOutlined} from '@ant-design/icons';
+import {Result, Button, notification} from 'antd';
 import Authorized from '@/utils/Authorized';
 import RightContent from '@/components/GlobalHeader/RightContent';
-import { getAuthorityFromRouter } from '@/utils/utils';
+import {getAuthorityFromRouter} from '@/utils/utils';
 import logo from '../assets/logo.svg';
+import {
+  registAuthExceptionHandler,
+  registBusinessExceptionHandler,
+  registSystemExceptionHandler,
+} from '@/utils/utils';
 
 const noMatch = (
   <Result
@@ -50,7 +55,7 @@ const defaultFooterDom = (
       },
       {
         key: 'github',
-        title: <GithubOutlined />,
+        title: <GithubOutlined/>,
         href: 'https://github.com/ant-design/ant-design-pro',
         blankTarget: true,
       },
@@ -88,6 +93,41 @@ const BasicLayout = (props) => {
    * init variables
    */
 
+  registAuthExceptionHandler(err => {
+    console.log('BasicLayout registAuthExceptionHandler err ', err);
+    const {data} = err;
+    const {body: {improvement = '请重新登录', message = '认证失败或已过期', level = 0}} = (data || {body: {}});
+    notification.error({
+      message: '警告',
+      description: `${message}  , ${improvement}`,
+      onClose: () => localStorage.setItem('token', '') || router.push('/user/login'),
+    });
+    throw err;
+  });
+
+  registBusinessExceptionHandler(err => {
+    console.log('BasicLayout registBusinessExceptionHandler err ', err);
+    const {data} = err;
+    const {body: {improvement = '请通知管理员', message = '操作失败', level = 0}} = (data || {body: {}});
+    notification.error({
+      message: '操作失败',
+      description: `${message}  , ${improvement} `,
+    });
+    throw err;
+  });
+
+  registSystemExceptionHandler(err => {
+    console.log('BasicLayout registSystemExceptionHandler err ', err);
+    const {data} = err || {};
+    const {body} = data;
+    const {improvement = '请通知管理员', message = '系统异常', level = 0} = body;
+    notification.error({
+      message: '系统异常',
+      description: `${message}  , ${improvement}`,
+    });
+    throw err;
+  });
+
   const handleMenuCollapse = (payload) => {
     if (dispatch) {
       dispatch({
@@ -100,7 +140,7 @@ const BasicLayout = (props) => {
   const authorized = getAuthorityFromRouter(props.route.routes, location.pathname || '/') || {
     authority: undefined,
   };
-  const { formatMessage } = useIntl();
+  const {formatMessage} = useIntl();
   return (
     <>
       <ProLayout
@@ -134,7 +174,7 @@ const BasicLayout = (props) => {
         }}
         footerRender={() => defaultFooterDom}
         menuDataRender={menuDataRender}
-        rightContentRender={() => <RightContent />}
+        rightContentRender={() => <RightContent/>}
         {...props}
         {...settings}
       >
@@ -155,7 +195,7 @@ const BasicLayout = (props) => {
   );
 };
 
-export default connect(({ global, settings }) => ({
+export default connect(({global, settings}) => ({
   collapsed: global.collapsed,
   settings,
 }))(BasicLayout);

@@ -32,37 +32,40 @@ const Model = {
   effects: {
     * login({payload: {userName, type, password}}, {call, put}) {
       const service = new AuthControllerApi();
-      console.log('effects login userName, type, password ', userName, type, password);
-      const result = yield call(() => service.loginUsingPOST(userName, password));
-      console.log('effects login result ', result);
-      const response = yield call(fakeAccountLogin, payload);
-      yield put({
-        type: 'changeLoginStatus',
-        payload: response,
-      }); // Login successfully
+      try {
+        console.log('effects login userName, type, password ', userName, type, password);
+        const {success, data} = yield call(() => service.loginUsingPOST(userName, password));
+        yield put({
+          type: 'changeLoginStatus',
+          payload: {...data, status: 'ok', type: 'browser'}
+        }); // Login successfully
 
-      if (response.status === 'ok') {
-        message.success('登录成功！');
-        const urlParams = new URL(window.location.href);
-        const params = getPageQuery();
-        let {redirect} = params;
+        if (success) {
+          message.success('登录成功！');
+          const urlParams = new URL(window.location.href);
+          const params = getPageQuery();
+          let {redirect} = params;
 
-        if (redirect) {
-          const redirectUrlParams = new URL(redirect);
+          if (redirect) {
+            const redirectUrlParams = new URL(redirect);
 
-          if (redirectUrlParams.origin === urlParams.origin) {
-            redirect = redirect.substr(urlParams.origin.length);
+            if (redirectUrlParams.origin === urlParams.origin) {
+              redirect = redirect.substr(urlParams.origin.length);
 
-            if (redirect.match(/^\/.*#/)) {
-              redirect = redirect.substr(redirect.indexOf('#') + 1);
+              if (redirect.match(/^\/.*#/)) {
+                redirect = redirect.substr(redirect.indexOf('#') + 1);
+              }
+            } else {
+              window.location.href = redirect;
+              return;
             }
-          } else {
-            window.location.href = redirect;
-            return;
           }
-        }
 
-        history.replace(redirect || '/');
+          history.replace(redirect || '/');
+        }
+      } catch (e) {
+        console.log('effects login e ', e);
+        message.error('密码输入错误.');
       }
     },
 
@@ -72,8 +75,10 @@ const Model = {
   },
   reducers: {
     changeLoginStatus(state, {payload}) {
-      setAuthority(payload.currentAuthority);
-      return {...state, status: payload.status, type: payload.type};
+      const {token, status, type, user, expiration} = payload;
+      console.log('reducers changeLoginStatus token, status, type, user, expiration ', token, status, type, user, expiration)
+      setAuthority(token);
+      return {...state, status, type, expiration, ...user};
     },
   },
 };
