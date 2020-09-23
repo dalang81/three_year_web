@@ -3,7 +3,7 @@ import {history} from 'umi';
 import {fakeAccountLogin} from '@/services/login';
 import {setAuthority} from '@/utils/authority';
 import {getPageQuery} from '@/utils/utils';
-import {AuthControllerApi} from 'kosmos-dubhe-api';
+// import {AuthControllerApi} from 'kosmos-libra-api';
 
 const Model = {
   namespace: 'login',
@@ -12,8 +12,8 @@ const Model = {
   },
   effects: {
     * login({password, type, userName}, {call, put}) {
-      const service = new AuthControllerApi();
-      const result = service.loginUsingPOST(userName, password);
+    //  const service = new AuthControllerApi();
+    //  const result = service.loginUsingPOST(userName, password);
       console.log('effects login result ', result);
       const response = yield call(fakeAccountLogin, {password, type, userName});
       yield put({

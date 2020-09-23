@@ -3,7 +3,8 @@ const getApi = () => {
   console.log(' getApi API_ENV ', API_ENV);
   switch (API_ENV) {
     case 'dev': {
-      return 'http://localhost:28101';
+      // return 'http://localhost:28101';
+      return 'http://libra-privilege.api.9dyf.cn';
     }
     case 'qa': {
       return 'http://10.10.10.210:28301';
