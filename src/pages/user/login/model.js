@@ -76,9 +76,9 @@ const Model = {
   reducers: {
     changeLoginStatus(state, {payload}) {
       const {token, status, type, user, expiration} = payload;
-      console.log('reducers changeLoginStatus token, status, type, user, expiration ', token, status, type, user, expiration)
+      console.log('reducers changeLoginStatus token, status, type, user, expiration ', token, status, type, user, expiration);
       setAuthority(token);
-      return {...state, status, type, expiration, ...user};
+      return {...state, token, status, type, expiration, ...user};
     },
   },
 };
