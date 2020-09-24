@@ -74,7 +74,7 @@ const handleRemove = async (selectedRows) => {
 };
 
 const UserManagement = props => {
-  const {loading, list} = props;
+  const {loading, content} = props;
   const [createModalVisible, handleModalVisible] = useState(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState(false);
   const [stepFormValues, setStepFormValues] = useState({});
@@ -84,6 +84,7 @@ const UserManagement = props => {
     {
       title: '用户名',
       dataIndex: 'username',
+      key: 'username',
       rules: [
         {
           required: true,
@@ -93,20 +94,24 @@ const UserManagement = props => {
     },
     {
       title: '全名',
+      key: 'fullname',
       dataIndex: 'fullname',
     },
     {
       title: '身份证',
+      key: 'identity',
       dataIndex: 'identity',
     },
     {
       title: '描述',
       dataIndex: 'description',
+      key: 'description',
       valueType: 'textarea',
     },
     {
       title: '操作',
       dataIndex: 'option',
+      key: 'option',
       valueType: 'option',
       render: (_, record) => (
         <>
@@ -147,7 +152,7 @@ const UserManagement = props => {
           </Button>,
         ]}
         //   request={(params, sorter, filter) => queryRule({...params, sorter, filter})}
-        dataSource={list}
+        dataSource={content}
         loading={loading}
         columns={columns}
         rowSelection={{
@@ -230,7 +235,7 @@ const UserManagement = props => {
   );
 };
 
-export default connect(({userManagement, loading}) => ({
-  userManagement,
+export default connect(({userManagement: {content}, loading}) => ({
+  content,
   submitting: loading.effects['userManagement/fetchList'],
 }))(UserManagement);

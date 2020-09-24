@@ -17,6 +17,7 @@ import {
   registBusinessExceptionHandler,
   registSystemExceptionHandler,
 } from '@/utils/utils';
+import {stringify} from "querystring";
 
 const noMatch = (
   <Result
@@ -95,20 +96,28 @@ const BasicLayout = (props) => {
 
   registAuthExceptionHandler(err => {
     console.log('BasicLayout registAuthExceptionHandler err ', err);
-    const {data} = err;
-    const {body: {improvement = '请重新登录', message = '认证失败或已过期', level = 0}} = (data || {body: {}});
+    const {data} = err || {};
+    const {body = {}} = data;
+    const {improvement = '请重新登录', message = '认证失败或已过期', level = 0} = body;
     notification.error({
       message: '警告',
       description: `${message}  , ${improvement}`,
-      onClose: () => localStorage.setItem('token', '') || router.push('/user/login'),
+      onClose: () => localStorage.setItem('token', '') || history.replace({
+        pathname: '/user/login',
+        search: stringify({
+          redirect: window.location.href,
+        }),
+      }),
     });
     throw err;
   });
 
   registBusinessExceptionHandler(err => {
     console.log('BasicLayout registBusinessExceptionHandler err ', err);
-    const {data} = err;
-    const {body: {improvement = '请通知管理员', message = '操作失败', level = 0}} = (data || {body: {}});
+
+    const {data} = err || {};
+    const {body = {}} = data;
+    const {improvement = '请通知管理员', message = '操作失败', level = 0} = body;
     notification.error({
       message: '操作失败',
       description: `${message}  , ${improvement} `,
@@ -119,7 +128,7 @@ const BasicLayout = (props) => {
   registSystemExceptionHandler(err => {
     console.log('BasicLayout registSystemExceptionHandler err ', err);
     const {data} = err || {};
-    const {body} = data;
+    const {body = {}} = data;
     const {improvement = '请通知管理员', message = '系统异常', level = 0} = body;
     notification.error({
       message: '系统异常',

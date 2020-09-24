@@ -2,6 +2,7 @@ import {history} from 'umi';
 import {message} from 'antd';
 import {parse} from 'qs';
 import {fakeAccountLogin, getFakeCaptcha} from './service';
+import {stringify} from "querystring";
 
 // import {AuthControllerApi} from 'kosmos-libra-api';
 
@@ -64,6 +65,19 @@ const Model = {
         }
       } catch (err) {
         console.error('effects login err ', err);
+      }
+    },
+
+    logout() {
+      //  const {redirect} = getPageQuery(); Note: There may be security issues, please note
+      localStorage.setItem('token', null);
+      if (window.location.pathname !== '/user/login') { //&& !redirect
+        history.replace({
+          pathname: '/user/login',
+          search: stringify({
+            redirect: window.location.href,
+          }),
+        });
       }
     },
 

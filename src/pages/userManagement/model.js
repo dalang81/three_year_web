@@ -19,22 +19,64 @@ const Model = {
   effects: {
     * fetchList({payload}, {call, put}) {
       const service = new AdminControllerApi();
-      const response = yield call(() => service.getAdminUsers());
-      console.log('effects fetchList response ');
-      console.table(response);
-      yield put({
-        type: 'changeList',
-        payload: response,
-      }); // Login successfullyuccessfully
+      try {
+        const {
+          content = [],
+          pageable = {},
+          totalPages = 0,
+          totalElements = 0,
+          last = true,
+          first = true,
+          sort = {},
+          numberOfElements = 0,
+          size = 10,
+          number = 0,
+          empty = false
+        } = yield call(() => service.getAdminUsers());
+        console.log('effects fetchList response content');
+        console.table(content);
+        yield put({
+          type: 'changeList',
+          payload: {
+            content,
+            pageable,
+            totalPages,
+            totalElements,
+            last,
+            first,
+            sort,
+            numberOfElements,
+            size,
+            number,
+            empty
+          },
+        }); // Login successfullyuccessfully
+      } catch (e) {
+        console.log('effects fetchList e ', e);
+      }
     },
 
 
   },
   reducers: {
     changeList(state, {payload}) {
-      const {token, status, type, user, expiration} = payload;
-      console.log('reducers changeLoginStatus token, status, type, user, expiration ', token, status, type, user, expiration);
-      return {...state, token, status, type, expiration, ...user};
+      const {
+        content, pageable, totalPages, totalElements, last, first, sort, numberOfElements, size, number, empty
+      } = payload;
+      return {
+        ...state,
+        content,
+        pageable,
+        totalPages,
+        totalElements,
+        last,
+        first,
+        sort,
+        numberOfElements,
+        size,
+        number,
+        empty
+      };
     },
 
     unload() {
