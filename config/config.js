@@ -72,6 +72,12 @@ export default defineConfig({
               redirect: '/dashboard/analysis',
             },
             {
+              path: '/userManagement',
+              name: 'userManagement',
+              icon: 'smile',
+              component: './UserManagement',
+            },
+            {
               path: '/dashboard',
               name: 'dashboard',
               icon: 'dashboard',

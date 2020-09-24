@@ -1,7 +1,7 @@
 import {parse} from 'querystring';
 import pathRegexp from 'path-to-regexp';
 import defaultSettings from '../../config/defaultSettings';
-import { ApiClient, ApiContext } from 'kosmos-libra-api';
+import {ApiClient, ApiContext} from 'kosmos-libra-api';
 /* eslint no-useless-escape:0 import/prefer-default-export:0 */
 const reg = /(((^https?:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+(?::\d+)?|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)$/;
 export const isUrl = (path) => reg.test(path);
@@ -71,9 +71,15 @@ const selectSelfFn = namespace => store => {
 const buildApiClient = () => {
   const result = ApiClient.instance;
   const basePath = defaultSettings.endpoint;
-  result.defaultHeaders = {...result.defaultHeaders, ...{token: localStorage.getItem('token')}};
+  result.authentications = {'oauth2': {type: 'oauth2', accessToken: localStorage.getItem('token')}};
+  result.authNames = ['oauth2'];
+  result.defaultHeaders = {...result.defaultHeaders};
   result.basePath = basePath;
   return result;
+};
+
+const buildApiContext = () => {
+
 };
 
 const registSystemExceptionHandler = fn => {

@@ -83,6 +83,7 @@ export default {
         status: 'ok',
         type,
         currentAuthority: 'admin',
+        token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsicHJpdmlsZWdlLWFwaSJdLCJzdWIiOiJkZXYiLCJhdXRoIjoiZGV2LXJvbGUiLCJ1c2VyX25hbWUiOiJkZXYiLCJzY29wZSI6WyJ3ZWItdXNlciJdLCJleHAiOjE2MDEzOTMwNTksImF1dGhvcml0aWVzIjpbImRldi1yb2xlIl0sImp0aSI6ImI5NjNmOGVmLTQ1N2MtNDRjZC05NmRkLTA2ZTIyZTY5OTVkMCIsImNsaWVudF9pZCI6IndlYiJ9.YUhuRKufWzkrt40TurOzOAg0ab3jylHbcon_OGexsds'
       });
       return;
     }

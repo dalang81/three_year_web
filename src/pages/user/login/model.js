@@ -9,9 +9,10 @@ export function getPageQuery() {
   return parse(window.location.href.split('?')[1]);
 }
 
-export function setAuthority(authority) {
+export function setAuthority(authority, token) {
   const proAuthority = typeof authority === 'string' ? [authority] : authority;
   localStorage.setItem('antd-pro-authority', JSON.stringify(proAuthority)); // hard code
+  localStorage.setItem('token', token); // hard code
   // reload Authorized component
 
   try {
@@ -67,9 +68,9 @@ const Model = {
   },
   reducers: {
     changeLoginStatus(state, {payload}) {
-      const {token, status, type, user, expiration} = payload;
+      const {token, status, type, user, expiration, currentAuthority} = payload;
       console.log('reducers changeLoginStatus token, status, type, user, expiration ', token, status, type, user, expiration);
-      setAuthority(token);
+      setAuthority(currentAuthority, token);
       return {...state, token, status, type, expiration, ...user};
     },
   },
