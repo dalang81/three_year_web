@@ -70,11 +70,11 @@ const selectSelfFn = namespace => store => {
 
 const buildApiClient = () => {
   const result = ApiClient.instance;
-  const basePath = defaultSettings.endpoint;
   result.authentications = {'oauth2': {type: 'oauth2', accessToken: localStorage.getItem('token')}};
   result.authNames = ['oauth2'];
   result.defaultHeaders = {...result.defaultHeaders};
-  result.basePath = basePath;
+  result.basePath = () => defaultSettings.endpoint();
+  console.log(' buildApiClient endpoint ', result.basePath());
   return result;
 };
 

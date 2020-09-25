@@ -48,6 +48,6 @@ const proSettings = {
   title: 'Dubhe',
   pwa: false,
   iconfontUrl: '',
-  endpoint: `${getApi()}`,
+  endpoint: () => `${getApi()}`,
 };
 export default proSettings;
