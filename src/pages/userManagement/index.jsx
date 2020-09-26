@@ -13,18 +13,14 @@ import {connect} from 'umi';
  * @param fields
  */
 
-const handleAdd = async (fields) => {
-  const hide = message.loading('正在添加');
-
-  try {
-    await addRule({...fields});
-    hide();
-    message.success('添加成功');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('添加失败请重试！');
-    return false;
+const handleAdd = (props, payload) => {
+  const {dispatch} = props;
+  console.log(' handleAdd fields ', payload);
+  if (dispatch) {
+    dispatch({
+      type: 'userManagement/addUser',
+      payload
+    });
   }
 };
 /**
@@ -75,9 +71,9 @@ const handleRemove = async (selectedRows) => {
 
 const UserManagement = props => {
   const {loading, content} = props;
-  const [createModalVisible, handleModalVisible] = useState(false);
+  const [createModalVisible, handleCreateModalVisible] = useState(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState(false);
-  const [stepFormValues, setStepFormValues] = useState({});
+  const [updateFormValues, setUpdateFormValues] = useState({});
   const actionRef = useRef();
   const [selectedRowsState, setSelectedRows] = useState([]);
   const columns = [
@@ -118,13 +114,13 @@ const UserManagement = props => {
           <a
             onClick={() => {
               handleUpdateModalVisible(true);
-              setStepFormValues(record);
+              setUpdateFormValues(record);
             }}
           >
-            配置
+            编辑
           </a>
           <Divider type="vertical"/>
-          <a href="">订阅警报</a>
+          <a href="">删除</a>
         </>
       ),
     },
@@ -140,99 +136,96 @@ const UserManagement = props => {
     }
     return () => dispatch && dispatch({type: 'userManagement/unload'});
   }, []);
-  return (
-    <PageContainer>
-      <ProTable
-        headerTitle="用户列表"
-        actionRef={actionRef}
-        rowKey="key"
-        toolBarRender={() => [
-          <Button type="primary" onClick={() => handleModalVisible(true)}>
-            <PlusOutlined/> 新建
-          </Button>,
-        ]}
-        //   request={(params, sorter, filter) => queryRule({...params, sorter, filter})}
-        dataSource={content}
-        loading={loading}
-        columns={columns}
-        rowSelection={{
-          onChange: (_, selectedRows) => setSelectedRows(selectedRows),
-        }}
-      />
-      {selectedRowsState?.length > 0 && (
-        <FooterToolbar
-          extra={
-            <div>
-              已选择{' '}
-              <a
-                style={{
-                  fontWeight: 600,
-                }}
-              >
-                {selectedRowsState.length}
-              </a>{' '}
-              项&nbsp;&nbsp;
-              <span>
-                服务调用次数总计 {selectedRowsState.reduce((pre, item) => pre + item.callNo, 0)} 万
+  return <PageContainer>
+    <ProTable
+      headerTitle="用户列表"
+      actionRef={actionRef}
+      rowKey="username"
+      toolBarRender={() => [
+        <Button type="primary" onClick={() => handleCreateModalVisible(true)}>
+          <PlusOutlined/> 新建
+        </Button>,
+      ]}
+      //   request={(params, sorter, filter) => queryRule({...params, sorter, filter})}
+      dataSource={content}
+      loading={loading}
+      columns={columns}
+      rowSelection={{
+        onChange: (_, selectedRows) => setSelectedRows(selectedRows),
+      }}
+    />
+    {selectedRowsState?.length > 0 && (
+      <FooterToolbar
+        extra={
+          <div>
+            已选择{' '}
+            <a
+              style={{
+                fontWeight: 600,
+              }}
+            >
+              {selectedRowsState.length}
+            </a>{' '}
+            项&nbsp;&nbsp;
+            <span>
               </span>
-            </div>
-          }
+          </div>
+        }
+      >
+        <Button
+          onClick={async () => {
+            await handleRemove(selectedRowsState);
+            setSelectedRows([]);
+            actionRef.current?.reloadAndRest();
+          }}
         >
-          <Button
-            onClick={async () => {
-              await handleRemove(selectedRowsState);
-              setSelectedRows([]);
-              actionRef.current?.reloadAndRest();
-            }}
-          >
-            批量删除
-          </Button>
-          <Button type="primary">批量审批</Button>
-        </FooterToolbar>
-      )}
-      <CreateForm onCancel={() => handleModalVisible(false)} modalVisible={createModalVisible}>
-        <ProTable
-          onSubmit={async (value) => {
-            const success = await handleAdd(value);
+          批量删除
+        </Button>
+      </FooterToolbar>
+    )}
+    <CreateForm
+      onCancel={() => handleCreateModalVisible(false)}
+      modalVisible={createModalVisible}>
+      <ProTable
+        onSubmit={(value) => {
+          const success = handleAdd(props, value);
 
-            if (success) {
-              handleModalVisible(false);
+          if (success) {
+            handleCreateModalVisible(false);
 
-              if (actionRef.current) {
-                actionRef.current.reload();
-              }
+            if (actionRef.current) {
+              actionRef.current.reload();
             }
-          }}
-          rowKey="key"
-          type="form"
-          columns={columns}
-          rowSelection={{}}
-        />
-      </CreateForm>
-      {stepFormValues && Object.keys(stepFormValues).length ? (
-        <UpdateForm
-          onSubmit={async (value) => {
-            const success = await handleUpdate(value);
-
-            if (success) {
-              handleUpdateModalVisible(false);
-              setStepFormValues({});
-
-              if (actionRef.current) {
-                actionRef.current.reload();
-              }
-            }
-          }}
-          onCancel={() => {
+          }
+        }}
+        rowKey="key"
+        type="form"
+        columns={columns}
+        rowSelection={{}}
+      />
+    </CreateForm>
+    <UpdateForm
+      onCancel={() => handleUpdateModalVisible(false)}
+      modalVisible={updateModalVisible}
+    >
+      <ProTable
+        onSubmit={(value) => {
+          const success = handleUpdate(props, value);
+          if (success) {
             handleUpdateModalVisible(false);
-            setStepFormValues({});
-          }}
-          updateModalVisible={updateModalVisible}
-          values={stepFormValues}
-        />
-      ) : null}
-    </PageContainer>
-  );
+            if (actionRef.current) {
+              actionRef.current.reload();
+            }
+          }
+        }}
+        form={{initialValues: updateFormValues}}
+        rowKey="key"
+        type="form"
+        columns={columns}
+        rowSelection={{}}
+      />
+    </UpdateForm>
+  </PageContainer>;
 };
 
 export default connect(({userManagement: {content}, loading}) => ({
