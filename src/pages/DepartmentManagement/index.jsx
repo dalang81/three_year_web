@@ -22,21 +22,26 @@ const DepartmentManagement = props => {
       title: '描述',
       dataIndex: 'description',
       key: 'description',
-      valueType: 'textarea',
+      //  valueType: 'textarea',
     },
     {
       title: '操作',
       dataIndex: 'option',
       key: 'option',
-      valueType: 'option',
-      render: (_, record) => (
+      // valueType: 'option',
+      render: (t, r, i) => (
         <>
-          <a
-            onClick={() => {
-              console.log('  handleUpdateModalVisible ', handleUpdateModalVisible);
-              handleUpdateModalVisible(true);
-              setUpdateFormValues(record);
-            }}
+          <a onClick={() => {
+            console.log('  handleCreateModalVisible ', handleCreateModalVisible);
+            handleCreateModalVisible(true);
+          }}
+          >新建</a>
+          <Divider type="vertical"/>
+          <a onClick={() => {
+            console.log('  handleUpdateModalVisible ', handleUpdateModalVisible);
+            handleUpdateModalVisible(true);
+            setUpdateFormValues(r);
+          }}
           >
             编辑
           </a>
@@ -47,14 +52,24 @@ const DepartmentManagement = props => {
     },
   ];
 
+  const onFinish = v => {
+    console.log(' onFinish v ', v);
+    const {dispatch} = props;
+
+    dispatch && dispatch({
+      type: 'departmentManagement/update',
+      payload: {...v}
+    });
+
+  };
+
   useEffect(() => {
     const {dispatch} = props;
-    if (dispatch) {
-      dispatch({
-        type: 'departmentManagement/fetchList',
-        payload: {}
-      });
-    }
+
+    dispatch && dispatch({
+      type: 'departmentManagement/fetchList',
+      payload: {}
+    });
     return () => dispatch && dispatch({type: 'departmentManagement/unload'});
   }, []);
 
@@ -65,6 +80,7 @@ const DepartmentManagement = props => {
       onCancel={() => handleCreateModalVisible(false)}
     />
     <UpdateForm
+      onFinish={v => onFinish(v)}
       modalVisible={updateModalVisible}
       values={updateFormValues}
       onCancel={() => handleUpdateModalVisible(false)}

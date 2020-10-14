@@ -1,6 +1,7 @@
 export default {
   'menu.welcome': '欢迎',
   'menu.userManagement': '用户管理',
+  'menu.userManagement1': '用户管理(DEMO)',
   'menu.departmentManagement': '部门管理',
   'menu.more-blocks': '更多区块',
   'menu.home': '首页',
