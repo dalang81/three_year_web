@@ -2,6 +2,8 @@ import {connect} from 'umi';
 import {Button, Divider, message, Table} from 'antd';
 import React, {useEffect, useState} from 'react';
 import {PageContainer} from '@ant-design/pro-layout';
+import CreateForm from './CreateForm';
+import UpdateForm from './UpdateForm';
 
 
 const DepartmentManagement = props => {
@@ -31,6 +33,7 @@ const DepartmentManagement = props => {
         <>
           <a
             onClick={() => {
+              console.log('  handleUpdateModalVisible ', handleUpdateModalVisible);
               handleUpdateModalVisible(true);
               setUpdateFormValues(record);
             }}
@@ -56,7 +59,16 @@ const DepartmentManagement = props => {
   }, []);
 
   return <PageContainer>
-    <Table columns={columns} dataSource={content}/>
+    <Table columns={columns} dataSource={content} loading={loading}/>
+    <CreateForm
+      modalVisible={createModalVisible}
+      onCancel={() => handleCreateModalVisible(false)}
+    />
+    <UpdateForm
+      modalVisible={updateModalVisible}
+      values={updateFormValues}
+      onCancel={() => handleUpdateModalVisible(false)}
+    />
   </PageContainer>;
 };
 
