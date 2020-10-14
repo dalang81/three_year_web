@@ -239,4 +239,3 @@ export default connect(({userManagement: {content}, loading}) => ({
   content,
   submitting: loading.effects['userManagement/fetchList'],
 }))(UserManagement);
-;
