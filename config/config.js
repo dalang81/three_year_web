@@ -78,6 +78,12 @@ export default defineConfig({
               component: './UserManagement',
             },
             {
+              path: '/userManagement1',
+              name: 'userManagement1',
+              icon: 'smile',
+              component: './TableDemo',
+            },
+            {
               path: '/dashboard',
               name: 'dashboard',
               icon: 'dashboard',

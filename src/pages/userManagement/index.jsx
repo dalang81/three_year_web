@@ -141,6 +141,13 @@ const UserManagement = props => {
       headerTitle="用户列表"
       actionRef={actionRef}
       rowKey="username"
+      options={{
+        fullScreen: true,
+        reload: false,
+        setting: false,
+        density: false,
+        search: {onSearch: str => console.log('str:', str), name: 'n1'}
+      }}
       toolBarRender={() => [
         <Button type="primary" onClick={() => handleCreateModalVisible(true)}>
           <PlusOutlined/> 新建
@@ -232,3 +239,4 @@ export default connect(({userManagement: {content}, loading}) => ({
   content,
   submitting: loading.effects['userManagement/fetchList'],
 }))(UserManagement);
+;

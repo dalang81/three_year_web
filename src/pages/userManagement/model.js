@@ -29,9 +29,7 @@ const init = () => ({
 });
 const Model = {
   namespace: NAME_SPEACE,
-  state: {
-    status: undefined,
-  },
+  state: {...init()},
   effects: {
     * fetchList({payload}, {call, put}) {
       const service = new AdminControllerApi();
@@ -76,7 +74,7 @@ const Model = {
       const service = new AdminControllerApi();
       console.log('effects addUser payload ', {...mockUser(), ...payload});
       try {
-        service.postAdminUser({...mockUser(), ...payload});
+        yield call( ()=> service.postAdminUser({...mockUser(), ...payload}));
       } catch (e) {
         console.log('effects addUser e ', e);
       }
