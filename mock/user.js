@@ -83,7 +83,7 @@ export default {
         status: 'ok',
         type,
         currentAuthority: 'admin',
-        token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsicHJpdmlsZWdlLWFwaSJdLCJzdWIiOiJkZXYiLCJhdXRoIjoiZGV2LXJvbGUiLCJ1c2VyX25hbWUiOiJkZXYiLCJzY29wZSI6WyJ3ZWItdXNlciJdLCJleHAiOjE2MDEzOTMwNTksImF1dGhvcml0aWVzIjpbImRldi1yb2xlIl0sImp0aSI6ImI5NjNmOGVmLTQ1N2MtNDRjZC05NmRkLTA2ZTIyZTY5OTVkMCIsImNsaWVudF9pZCI6IndlYiJ9.YUhuRKufWzkrt40TurOzOAg0ab3jylHbcon_OGexsds'
+        token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsicHJpdmlsZWdlLWFwaSJdLCJzdWIiOiJkZXYiLCJhdXRoIjoiZGV2LXJvbGUiLCJ1c2VyX25hbWUiOiJkZXYiLCJzY29wZSI6WyJ3ZWItdXNlciJdLCJleHAiOjE2MDMwOTAxNDEsImF1dGhvcml0aWVzIjpbImRldi1yb2xlIl0sImp0aSI6ImI1MmYzZTYyLTFjZDgtNDA4Mi1iMDM5LTIyYzFjNmY5NjU1YyIsImNsaWVudF9pZCI6IndlYiJ9.dz5AMg617WnQGIUERKqZdtmseJbtYqog_q777-Pv93k'
       });
       return;
     }
