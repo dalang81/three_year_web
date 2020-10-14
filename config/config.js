@@ -84,6 +84,13 @@ export default defineConfig({
               component: './TableDemo',
             },
             {
+              path: '/departmentManagement',
+              name: 'departmentManagement',
+              icon: 'smile',
+              component: './DepartmentManagement',
+            },
+
+            {
               path: '/dashboard',
               name: 'dashboard',
               icon: 'dashboard',
