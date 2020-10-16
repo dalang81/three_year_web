@@ -69,7 +69,7 @@ const DepartmentManagement = props => {
       type: 'departmentManagement/create',
       payload: {...v}
     });
-    handleUpdateModalVisible(false);
+    handleCreateModalVisible(false);
   };
 
   useEffect(() => {

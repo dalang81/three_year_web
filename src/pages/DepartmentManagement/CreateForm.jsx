@@ -17,7 +17,10 @@ const CreateForm = (props) => {
       destroyOnClose
       title="新建部门"
       visible={modalVisible}
-      onOk={() => console.log('form.getFieldsValue():', form.getFieldsValue()) || onOk && onOk({...form.getFieldsValue()})}
+      onOk={() => {
+        onOk && onOk({...form.getFieldsValue()});
+        form.resetFields();
+      }}
       onCancel={() => onCancel()}
       // footer={null}
     >
