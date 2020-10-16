@@ -10,17 +10,20 @@ const layout = {
   },
 };
 const CreateForm = (props) => {
-  const {modalVisible, onCancel} = props;
+  const {modalVisible, onCancel, onOk} = props;
+  const [form] = Form.useForm();
   return (
     <Modal
       destroyOnClose
       title="新建部门"
       visible={modalVisible}
+      onOk={() => console.log('form.getFieldsValue():', form.getFieldsValue()) || onOk && onOk({...form.getFieldsValue()})}
       onCancel={() => onCancel()}
       // footer={null}
     >
       <Form
         {...layout}
+        form={form}
         name="basic"
         initialValues={{}}
         // onFinish={onFinish}

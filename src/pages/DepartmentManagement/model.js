@@ -64,6 +64,34 @@ const Model = {
       }
     },
 
+    * update({payload}, {call, put}) {
+      const service = new AdminControllerApi();
+      console.log('effects update payload ', payload);
+      try {
+        yield call(() => service.putAdminDepartment(payload));
+        yield put({
+          type: 'fetchList',
+          payload: {}
+        });
+      } catch (e) {
+        console.log('effects update e ', e);
+      }
+    },
+
+    * create({payload}, {call, put}) {
+      const service = new AdminControllerApi();
+      console.log('effects create payload ', payload);
+      try {
+        yield call(() => service.postAdminDepartment(payload));
+        yield put({
+          type: 'fetchList',
+          payload: {}
+        });
+      } catch (e) {
+        console.log('effects create e ', e);
+      }
+    },
+
     * addUser({payload}, {call, put}) {
       const service = new AdminControllerApi();
       console.log('effects addDepartment payload ', {...mockDepartment(), ...payload});

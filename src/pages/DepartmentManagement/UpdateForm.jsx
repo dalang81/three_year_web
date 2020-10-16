@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Modal, Form, Input} from 'antd';
 
 const layout = {
@@ -10,21 +10,29 @@ const layout = {
   },
 };
 const UpdateForm = (props) => {
-  const {modalVisible, onCancel, values, onFinish} = props;
+  const {modalVisible, onOk, onCancel, values} = props;
+  const [form] = Form.useForm();
+
+
+  const onReset = () => {
+    form.resetFields();
+  };
+
   return (
     <Modal
       destroyOnClose
       title="编辑部门"
       visible={modalVisible}
-      onOk={v => onFinish && onFinish(v)}
+      onOk={() => onOk && onOk({...values, ...form.getFieldsValue()})}
       onCancel={() => onCancel()}
       // footer={null}
     >
       <Form
         {...layout}
+        form={form}
         name="basic"
         initialValues={{...values}}
-        // onFinish={v => onFinish && onFinish(v)}
+        //  onFinish={v => onFinish && onFinish(v)}
         //  onFinishFailed={onFinishFailed}
       >
         <Form.Item

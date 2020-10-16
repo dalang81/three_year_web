@@ -32,13 +32,11 @@ const DepartmentManagement = props => {
       render: (t, r, i) => (
         <>
           <a onClick={() => {
-            console.log('  handleCreateModalVisible ', handleCreateModalVisible);
             handleCreateModalVisible(true);
           }}
           >新建</a>
           <Divider type="vertical"/>
           <a onClick={() => {
-            console.log('  handleUpdateModalVisible ', handleUpdateModalVisible);
             handleUpdateModalVisible(true);
             setUpdateFormValues(r);
           }}
@@ -52,15 +50,26 @@ const DepartmentManagement = props => {
     },
   ];
 
-  const onFinish = v => {
-    console.log(' onFinish v ', v);
+  const doUpdate = v => {
+    console.log(' doUpdate v ', v);
     const {dispatch} = props;
 
     dispatch && dispatch({
       type: 'departmentManagement/update',
       payload: {...v}
     });
+    handleUpdateModalVisible(false);
+  };
 
+  const doCreate = v => {
+    console.log(' doCreate v ', v);
+    const {dispatch} = props;
+
+    dispatch && dispatch({
+      type: 'departmentManagement/create',
+      payload: {...v}
+    });
+    handleUpdateModalVisible(false);
   };
 
   useEffect(() => {
@@ -77,12 +86,13 @@ const DepartmentManagement = props => {
     <Table columns={columns} dataSource={content} loading={loading}/>
     <CreateForm
       modalVisible={createModalVisible}
+      onOk={values => doCreate(values)}
       onCancel={() => handleCreateModalVisible(false)}
     />
     <UpdateForm
-      onFinish={v => onFinish(v)}
       modalVisible={updateModalVisible}
       values={updateFormValues}
+      onOk={values => doUpdate(values)}
       onCancel={() => handleUpdateModalVisible(false)}
     />
   </PageContainer>;
