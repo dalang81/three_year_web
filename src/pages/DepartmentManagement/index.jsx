@@ -1,17 +1,18 @@
 import {connect} from 'umi';
 import {Button, Divider, message, Table} from 'antd';
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {PageContainer} from '@ant-design/pro-layout';
 import CreateForm from './CreateForm';
 import UpdateForm from './UpdateForm';
 
 
 const DepartmentManagement = props => {
-  const {loading, content} = props;
+  const {loading, content, number, size, totalElements} = props;
   const [createModalVisible, handleCreateModalVisible] = useState(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState(false);
   const [updateFormValues, setUpdateFormValues] = useState({});
 
+  console.log(' DepartmentManagement number, size, totalElements ', number, size, totalElements);
   const columns = [
     {
       title: '全名',
@@ -72,6 +73,16 @@ const DepartmentManagement = props => {
     handleCreateModalVisible(false);
   };
 
+  const changePageNumber = useCallback((pageNum) => {
+    const {dispatch} = props;
+    dispatch({
+      type: 'departmentManagement/fetchListByPageNum',
+      payload: {
+        page: pageNum - 1,
+      },
+    });
+  }, []);
+
   useEffect(() => {
     const {dispatch} = props;
 
@@ -83,7 +94,19 @@ const DepartmentManagement = props => {
   }, []);
 
   return <PageContainer>
-    <Table columns={columns} dataSource={content} loading={loading}/>
+    <Table
+      columns={columns}
+      dataSource={content}
+      loading={loading}
+      pagination={{
+        showSizeChanger: false,
+        showQuickJumper: false,
+        pageSize: size,
+        current: number,
+        total: totalElements,
+        onChange: pageNum => changePageNumber(pageNum),
+      }}
+    />
     <CreateForm
       modalVisible={createModalVisible}
       onOk={values => doCreate(values)}
@@ -99,7 +122,8 @@ const DepartmentManagement = props => {
 };
 
 
-export default connect(({departmentManagement: {content}, loading}) => ({
+export default connect(({departmentManagement: {content, number, size, totalElements}, loading}) => ({
   content,
   submitting: loading.effects['departmentManagement/fetchList'],
+  number, size, totalElements,
 }))(DepartmentManagement);
