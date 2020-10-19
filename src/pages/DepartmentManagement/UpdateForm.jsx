@@ -1,14 +1,7 @@
 import React, {useState} from 'react';
 import {Modal, Form, Input} from 'antd';
+import {layout, rules} from '@/pages/DepartmentManagement/const';
 
-const layout = {
-  labelCol: {
-    span: 8,
-  },
-  wrapperCol: {
-    span: 16,
-  },
-};
 const UpdateForm = (props) => {
   const {modalVisible, onOk, onCancel, values} = props;
   const [form] = Form.useForm();
@@ -39,12 +32,7 @@ const UpdateForm = (props) => {
         <Form.Item
           label="全名"
           name="fullname"
-          rules={[
-            {
-              required: true,
-              message: '请输入部门全名!',
-            },
-          ]}
+          rules={rules}
         >
           <Input/>
         </Form.Item>

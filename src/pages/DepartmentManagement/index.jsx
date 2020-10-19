@@ -13,45 +13,7 @@ const DepartmentManagement = props => {
   const [updateFormValues, setUpdateFormValues] = useState({});
 
   console.log(' DepartmentManagement number, size, totalElements ', number, size, totalElements);
-  const columns = [
-    {
-      title: '全名',
-      key: 'fullname',
-      dataIndex: 'fullname',
-    },
-    {
-      title: '描述',
-      dataIndex: 'description',
-      key: 'description',
-      //  valueType: 'textarea',
-    },
-    {
-      title: '操作',
-      dataIndex: 'option',
-      key: 'option',
-      // valueType: 'option',
-      render: (t, r, i) => (
-        <>
-          <a key={'create'}
-             onClick={() => {
-               handleCreateModalVisible(true);
-             }}
-          >新建</a>
-          <Divider key={'d1'} type="vertical"/>
-          <a key={'update'}
-             onClick={() => {
-               handleUpdateModalVisible(true);
-               setUpdateFormValues(r);
-             }}
-          >
-            编辑
-          </a>
-          <Divider key={'d2'} type="vertical"/>
-          <a key={'delete'} href="">删除</a>
-        </>
-      ),
-    },
-  ];
+
 
   const doUpdate = v => {
     console.log(' doUpdate v ', v);
@@ -75,7 +37,7 @@ const DepartmentManagement = props => {
     handleCreateModalVisible(false);
   };
 
-  const changePageNumber = useCallback((pageNum) => {
+  const changePageNumber = pageNum => {
     const {dispatch} = props;
     dispatch({
       type: 'departmentManagement/fetchListByPageNum',
@@ -83,8 +45,50 @@ const DepartmentManagement = props => {
         page: pageNum - 1,
       },
     });
-  }, []);
+  };
 
+  const hideCreateModel = () => handleCreateModalVisible(false);
+  const showCreateModel = () => handleCreateModalVisible(true);
+
+  const hideUpdateModel = () => handleUpdateModalVisible(false);
+  const showUpdateModel = r => {
+    handleUpdateModalVisible(true);
+    setUpdateFormValues(r);
+  };
+  const columns = [
+    {
+      title: '全名',
+      key: 'fullname',
+      dataIndex: 'fullname',
+    },
+    {
+      title: '描述',
+      dataIndex: 'description',
+      key: 'description',
+      //  valueType: 'textarea',
+    },
+    {
+      title: '操作',
+      dataIndex: 'option',
+      key: 'option',
+      // valueType: 'option',
+      render: (t, r, i) => (
+        <>
+          <a key={'create'}
+             onClick={showCreateModel}
+          >新建</a>
+          <Divider key={'d1'} type="vertical"/>
+          <a key={'update'}
+             onClick={() => showUpdateModel(r)}
+          >
+            编辑
+          </a>
+          <Divider key={'d2'} type="vertical"/>
+          <a key={'delete'} href="">删除</a>
+        </>
+      ),
+    },
+  ];
   useEffect(() => {
     const {dispatch} = props;
 
@@ -107,19 +111,19 @@ const DepartmentManagement = props => {
         pageSize: size,
         current: number + 1,
         total: totalElements,
-        onChange: pageNum => changePageNumber(pageNum),
+        onChange: changePageNumber,
       }}
     />
     <CreateForm
       modalVisible={createModalVisible}
-      onOk={values => doCreate(values)}
-      onCancel={() => handleCreateModalVisible(false)}
+      onOk={doCreate}
+      onCancel={hideCreateModel}
     />
     <UpdateForm
       modalVisible={updateModalVisible}
       values={updateFormValues}
-      onOk={values => doUpdate(values)}
-      onCancel={() => handleUpdateModalVisible(false)}
+      onOk={doUpdate}
+      onCancel={hideUpdateModel}
     />
   </PageContainer>;
 };

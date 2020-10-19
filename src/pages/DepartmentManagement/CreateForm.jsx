@@ -1,14 +1,7 @@
 import React from 'react';
 import {Modal, Form, Input} from 'antd';
+import {layout, rules} from '@/pages/DepartmentManagement/const';
 
-const layout = {
-  labelCol: {
-    span: 8,
-  },
-  wrapperCol: {
-    span: 16,
-  },
-};
 const CreateForm = (props) => {
   const {modalVisible, onCancel, onOk} = props;
   const [form] = Form.useForm();
@@ -37,12 +30,7 @@ const CreateForm = (props) => {
         <Form.Item
           label="全名"
           name="fullname"
-          rules={[
-            {
-              required: true,
-              message: '请输入部门全名!',
-            },
-          ]}
+          rules={rules}
         >
           <Input/>
         </Form.Item>
