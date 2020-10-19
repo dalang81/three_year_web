@@ -12,18 +12,16 @@ const layout = {
 const UpdateForm = (props) => {
   const {modalVisible, onOk, onCancel, values} = props;
   const [form] = Form.useForm();
-
-
-  const onReset = () => {
-    form.resetFields();
-  };
-
+  console.log(' UpdateForm values ', values);
   return (
     <Modal
-      destroyOnClose
+      destroyOnClose={true}
       title="编辑部门"
       visible={modalVisible}
-      onOk={() => onOk && onOk({...values, ...form.getFieldsValue()})}
+      onOk={() => {
+        onOk && onOk({...values, ...form.getFieldsValue()});
+        form.resetFields();
+      }}
       onCancel={() => onCancel()}
       // footer={null}
     >
