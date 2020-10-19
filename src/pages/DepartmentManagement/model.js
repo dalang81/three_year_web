@@ -65,7 +65,7 @@ const Model = {
           sort = [],
           numberOfElements = 0,
           size = 10,
-          number = 0,
+          number = 1,
           empty = false
         } = yield call(() => service.getAdminDepartments({page, size: pageSize, sort}));
         console.log('effects fetchList response content');
@@ -89,7 +89,7 @@ const Model = {
             sort,
             numberOfElements,
             size,
-            number,
+            number: number + 1,
             empty
           },
         });
