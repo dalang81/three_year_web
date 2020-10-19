@@ -16,7 +16,6 @@ const DepartmentManagement = props => {
 
 
   const doUpdate = v => {
-    console.log(' doUpdate v ', v);
     const {dispatch} = props;
 
     dispatch && dispatch({
@@ -74,15 +73,9 @@ const DepartmentManagement = props => {
       // valueType: 'option',
       render: (t, r, i) => (
         <>
-          <a key={'create'}
-             onClick={showCreateModel}
-          >新建</a>
+          <a key={'create'} onClick={showCreateModel}>新建</a>
           <Divider key={'d1'} type="vertical"/>
-          <a key={'update'}
-             onClick={() => showUpdateModel(r)}
-          >
-            编辑
-          </a>
+          <a key={'update'} onClick={() => showUpdateModel(r)}> 编辑 </a>
           <Divider key={'d2'} type="vertical"/>
           <a key={'delete'} href="">删除</a>
         </>
