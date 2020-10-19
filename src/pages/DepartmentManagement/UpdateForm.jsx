@@ -20,8 +20,12 @@ const UpdateForm = (props) => {
       title="编辑部门"
       visible={modalVisible}
       onOk={() => {
-        onOk && onOk({...values, ...form.getFieldsValue()});
-        form.resetFields();
+        form.validateFields().then(msg => {
+          onOk && onOk({...values, ...form.getFieldsValue()});
+          form.resetFields();
+        })
+        ;
+
       }}
       onCancel={() => onCancel()}
       // footer={null}
