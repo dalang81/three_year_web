@@ -1,6 +1,6 @@
 import React from 'react';
 import {Modal, Form, Input} from 'antd';
-import {layout, rules} from '@/pages/DepartmentManagement/const';
+import {layout, rules} from './const';
 
 const CreateForm = (props) => {
   const {modalVisible, onCancel, onOk} = props;

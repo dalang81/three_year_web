@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {Modal, Form, Input} from 'antd';
-import {layout, rules} from '@/pages/DepartmentManagement/const';
+import {layout, rules} from './const';
 
 const UpdateForm = (props) => {
   const {modalVisible, onOk, onCancel, values} = props;
