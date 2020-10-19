@@ -32,20 +32,22 @@ const DepartmentManagement = props => {
       // valueType: 'option',
       render: (t, r, i) => (
         <>
-          <a onClick={() => {
-            handleCreateModalVisible(true);
-          }}
+          <a key={'create'}
+             onClick={() => {
+               handleCreateModalVisible(true);
+             }}
           >新建</a>
-          <Divider type="vertical"/>
-          <a onClick={() => {
-            handleUpdateModalVisible(true);
-            setUpdateFormValues(r);
-          }}
+          <Divider key={'d1'} type="vertical"/>
+          <a key={'update'}
+             onClick={() => {
+               handleUpdateModalVisible(true);
+               setUpdateFormValues(r);
+             }}
           >
             编辑
           </a>
-          <Divider type="vertical"/>
-          <a href="">删除</a>
+          <Divider key={'d2'} type="vertical"/>
+          <a key={'delete'} href="">删除</a>
         </>
       ),
     },
@@ -95,6 +97,7 @@ const DepartmentManagement = props => {
 
   return <PageContainer>
     <Table
+      rowKey={'id'}
       columns={columns}
       dataSource={content}
       loading={loading}

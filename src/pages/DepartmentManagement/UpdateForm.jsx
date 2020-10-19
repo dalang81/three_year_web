@@ -16,7 +16,8 @@ const UpdateForm = (props) => {
   console.log(' UpdateForm values ', values);
   return (
     <Modal
-      destroyOnClose={true}
+      getContainer={false}
+      destroyOnClose
       title="编辑部门"
       visible={modalVisible}
       onOk={async () => {

@@ -14,7 +14,8 @@ const CreateForm = (props) => {
   const [form] = Form.useForm();
   return (
     <Modal
-      destroyOnClose={true}
+      destroyOnClose
+      getContainer={false}
       title="新建部门"
       visible={modalVisible}
       onOk={async () => {
