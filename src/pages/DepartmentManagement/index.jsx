@@ -102,7 +102,7 @@ const DepartmentManagement = props => {
         showSizeChanger: false,
         showQuickJumper: false,
         pageSize: size,
-        current: number,
+        current: number + 1,
         total: totalElements,
         onChange: pageNum => changePageNumber(pageNum),
       }}

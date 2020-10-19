@@ -28,7 +28,6 @@ const init = () => ({
   empty: false,
 
   fullnameFilter: null,
-  currentPage: 0,
 
 });
 const selectSelf = selectSelfFn(NAME_SPACE);
@@ -37,6 +36,18 @@ const Model = {
   state: {...init()},
 
   effects: {
+    * refreshList({payload}, {call, select, put}) {
+      const {fullnameFilter, size: pageSize, number: page} = yield select(selectSelf);
+      yield put({
+        type: 'fetchList',
+        payload: {
+          page,
+          pageSize,
+          fullnameFilter,
+        },
+      });
+    },
+
     * fetchListByPageNum({payload}, {call, select, put}) {
       const {page} = payload;
       const {fullnameFilter, size: pageSize} = yield select(selectSelf);
@@ -89,7 +100,7 @@ const Model = {
             sort,
             numberOfElements,
             size,
-            number: number + 1,
+            number,
             empty
           },
         });
@@ -104,7 +115,7 @@ const Model = {
       try {
         yield call(() => service.putAdminDepartment(payload));
         yield put({
-          type: 'fetchList',
+          type: 'refreshList',
           payload: {}
         });
       } catch (e) {
