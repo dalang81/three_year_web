@@ -19,13 +19,10 @@ const UpdateForm = (props) => {
       destroyOnClose={true}
       title="编辑部门"
       visible={modalVisible}
-      onOk={() => {
-        form.validateFields().then(msg => {
-          onOk && onOk({...values, ...form.getFieldsValue()});
-          form.resetFields();
-        })
-        ;
-
+      onOk={async () => {
+        await form.validateFields();
+        onOk && onOk({...values, ...form.getFieldsValue()});
+        form.resetFields();
       }}
       onCancel={() => onCancel()}
       // footer={null}

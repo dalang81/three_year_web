@@ -17,7 +17,8 @@ const CreateForm = (props) => {
       destroyOnClose={true}
       title="新建部门"
       visible={modalVisible}
-      onOk={() => {
+      onOk={async () => {
+        await form.validateFields();
         onOk && onOk({...form.getFieldsValue()});
         form.resetFields();
       }}
