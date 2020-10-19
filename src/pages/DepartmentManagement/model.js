@@ -48,6 +48,20 @@ const Model = {
       });
     },
 
+    * fetchListByCondition({payload}, {call, select, put}) {
+      const {fullnameFilter} = payload;
+      const {size: pageSize, number: page} = yield select(selectSelf);
+
+      yield put({
+        type: 'fetchList',
+        payload: {
+          page,
+          pageSize,
+          fullnameFilter,
+        },
+      });
+    },
+
     * fetchListByPageNum({payload}, {call, select, put}) {
       const {page} = payload;
       const {fullnameFilter, size: pageSize} = yield select(selectSelf);
@@ -77,7 +91,8 @@ const Model = {
           numberOfElements = 0,
           size = 10,
           number = 1,
-          empty = false
+          empty = false,
+          fullnameFilter = null
         } = yield call(() => service.getAdminDepartments({page, size: pageSize, sort}));
         console.log('effects fetchList response content');
         console.table(content);

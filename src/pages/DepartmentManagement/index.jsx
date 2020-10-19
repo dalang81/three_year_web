@@ -4,6 +4,7 @@ import React, {useCallback, useEffect, useState} from 'react';
 import {PageContainer} from '@ant-design/pro-layout';
 import CreateForm from './CreateForm';
 import UpdateForm from './UpdateForm';
+import SearchForm from './SearchForm';
 
 
 const DepartmentManagement = props => {
@@ -34,6 +35,16 @@ const DepartmentManagement = props => {
       payload: {...v}
     });
     handleCreateModalVisible(false);
+  };
+
+  const doSearch = v => {
+    console.log(' doSearch v ', v);
+    const {dispatch} = props;
+
+    dispatch && dispatch({
+      type: 'departmentManagement/fetchListByCondition',
+      payload: {fullnameFilter: v}
+    });
   };
 
   const changePageNumber = pageNum => {
@@ -73,8 +84,8 @@ const DepartmentManagement = props => {
       // valueType: 'option',
       render: (t, r, i) => (
         <>
-          <a key={'create'} onClick={showCreateModel}>新建</a>
-          <Divider key={'d1'} type="vertical"/>
+          {/*<a key={'create'} onClick={showCreateModel}>新建</a>
+          <Divider key={'d1'} type="vertical"/>*/}
           <a key={'update'} onClick={() => showUpdateModel(r)}> 编辑 </a>
           <Divider key={'d2'} type="vertical"/>
           <a key={'delete'} href="">删除</a>
@@ -93,6 +104,7 @@ const DepartmentManagement = props => {
   }, []);
 
   return <PageContainer>
+    <SearchForm doSearch={doSearch} doCreate={showCreateModel}/>
     <Table
       rowKey={'id'}
       columns={columns}

@@ -1,10 +1,16 @@
-import React, {useState} from 'react';
+import React, {useState, useCallback} from 'react';
 import {Modal, Form, Input} from 'antd';
 import {layout, rules} from './const';
 
 const UpdateForm = (props) => {
   const {modalVisible, onOk, onCancel, values} = props;
   const [form] = Form.useForm();
+
+  const update = useCallback(async () => {
+    await form.validateFields();
+    onOk && onOk({...values, ...form.getFieldsValue()});
+    form.resetFields();
+  }, [onOk, form]);
   form.setFieldsValue(values);
   console.log(' UpdateForm values ', values);
   return (
@@ -13,12 +19,8 @@ const UpdateForm = (props) => {
       destroyOnClose
       title="编辑部门"
       visible={modalVisible}
-      onOk={async () => {
-        await form.validateFields();
-        onOk && onOk({...values, ...form.getFieldsValue()});
-        form.resetFields();
-      }}
-      onCancel={() => onCancel()}
+      onOk={update}
+      onCancel={onCancel}
       // footer={null}
     >
       <Form
