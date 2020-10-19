@@ -12,6 +12,7 @@ const layout = {
 const UpdateForm = (props) => {
   const {modalVisible, onOk, onCancel, values} = props;
   const [form] = Form.useForm();
+  form.setFieldsValue(values);
   console.log(' UpdateForm values ', values);
   return (
     <Modal

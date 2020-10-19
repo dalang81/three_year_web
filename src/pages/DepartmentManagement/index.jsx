@@ -107,17 +107,17 @@ const DepartmentManagement = props => {
         onChange: pageNum => changePageNumber(pageNum),
       }}
     />
-    {createModalVisible && <CreateForm
+    <CreateForm
       modalVisible={createModalVisible}
       onOk={values => doCreate(values)}
       onCancel={() => handleCreateModalVisible(false)}
-    />}
-    {updateModalVisible && <UpdateForm
+    />
+    <UpdateForm
       modalVisible={updateModalVisible}
       values={updateFormValues}
       onOk={values => doUpdate(values)}
       onCancel={() => handleUpdateModalVisible(false)}
-    />}
+    />
   </PageContainer>;
 };
 
